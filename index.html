@@ -1,17 +1,18 @@
-// Sửa dòng const apiUrl thành thế này:
-const apiUrl = 'https://api.tiklydown.eu.org/api/download?url=' + encodeURIComponent(urlInput);
+async function downloadVideo() {
+    const urlInput = document.getElementById('videoUrl').value.trim();
+    if (!urlInput) {
+        alert('Dán link vào đi b!');
+        return;
+    }
 
-
-    // Thay vì fetch('https://caxaumc.pythonanywhere.com/get-video'), 
-    // b hãy dùng API này (nó không bị chặn mạng):
-    const apiUrl = `https://api.tiklydown.eu.org/api/download?url=${encodeURIComponent(urlInput)}`;
+    const apiUrl = 'https://api.tiklydown.eu.org/api/download?url=' + encodeURIComponent(urlInput);
 
     try {
         const response = await fetch(apiUrl);
         const data = await response.json();
 
-        if (data.status === 200 && data.video.noWatermark) {
-            window.location.href = data.video.noWatermark; // Tải trực tiếp
+        if (data.status === 200 && data.video && data.video.noWatermark) {
+            window.location.href = data.video.noWatermark;
         } else {
             alert('Lỗi rồi, để tui xem lại...');
         }
@@ -19,4 +20,3 @@ const apiUrl = 'https://api.tiklydown.eu.org/api/download?url=' + encodeURICompo
         alert('Lỗi kết nối: ' + e.message);
     }
 }
-
