@@ -1,22 +1,28 @@
-async function downloadVideo() {
-    const urlInput = document.getElementById('videoUrl').value.trim();
-    if (!urlInput) {
-        alert('Dán link vào đi b!');
-        return;
-    }
+<!DOCTYPE html>
+<html>
+<body>
+    <!-- Giao diện của b ở đây -->
+    <input type="text" id="videoUrl">
+    <button onclick="downloadVideo()">Tải</button>
 
-    const apiUrl = 'https://api.tiklydown.eu.org/api/download?url=' + encodeURIComponent(urlInput);
-
-    try {
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-
-        if (data.status === 200 && data.video && data.video.noWatermark) {
-            window.location.href = data.video.noWatermark;
-        } else {
-            alert('Lỗi rồi, để tui xem lại...');
+    <!-- ĐÂY LÀ CHỖ QUAN TRỌNG NHẤT -->
+    <script>
+        async function downloadVideo() {
+            const urlInput = document.getElementById('videoUrl').value.trim();
+            if (!urlInput) { alert('Dán link vào đi b!'); return; }
+            const apiUrl = 'https://api.tiklydown.eu.org/api/download?url=' + encodeURIComponent(urlInput);
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                if (data.status === 200 && data.video && data.video.noWatermark) {
+                    window.location.href = data.video.noWatermark;
+                } else {
+                    alert('Lỗi rồi, để tui xem lại...');
+                }
+            } catch (e) {
+                alert('Lỗi kết nối: ' + e.message);
+            }
         }
-    } catch (e) {
-        alert('Lỗi kết nối: ' + e.message);
-    }
-}
+    </script>
+</body>
+</html>
