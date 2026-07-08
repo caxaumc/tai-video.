@@ -1,28 +1,13 @@
-<!DOCTYPE html>
-<html>
-<body>
-    <!-- Giao diện của b ở đây -->
-    <input type="text" id="videoUrl">
-    <button onclick="downloadVideo()">Tải</button>
+<input type="text" id="videoUrl" placeholder="Dán link TikTok vào đây">
+<button onclick="downloadVideo()">Tải video</button>
 
-    <!-- ĐÂY LÀ CHỖ QUAN TRỌNG NHẤT -->
-    <script>
-        async function downloadVideo() {
-            const urlInput = document.getElementById('videoUrl').value.trim();
-            if (!urlInput) { alert('Dán link vào đi b!'); return; }
-            const apiUrl = 'https://api.tiklydown.eu.org/api/download?url=' + encodeURIComponent(urlInput);
-            try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-                if (data.status === 200 && data.video && data.video.noWatermark) {
-                    window.location.href = data.video.noWatermark;
-                } else {
-                    alert('Lỗi rồi, để tui xem lại...');
-                }
-            } catch (e) {
-                alert('Lỗi kết nối: ' + e.message);
-            }
-        }
-    </script>
-</body>
-</html>
+<script>
+    function downloadVideo() {
+        const urlInput = document.getElementById('videoUrl').value.trim();
+        if (!urlInput) return alert('Dán link vào đi b!');
+        
+        // Cách này không dùng fetch, nên sẽ không bị lỗi CORS chặn
+        const downloadUrl = 'https://snaptik.app/en?url=' + encodeURIComponent(urlInput);
+        window.open(downloadUrl, '_blank');
+    }
+</script>
