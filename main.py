@@ -6,17 +6,16 @@ app = FastAPI()
 
 @app.get("/api")
 async def handle_download(url: str):
-    # API trung gian lấy link không watermark
-    api_endpoint = f"https://api.tiklydown.eu.org/api/download?url={url}"
+    # API này lấy link từ TiklyDown và chuyển hướng trình duyệt tới file video
+    api_url = f"https://api.tiklydown.eu.org/api/download?url={url}"
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.get(api_endpoint)
+            response = await client.get(api_url)
             data = response.json()
             if data.get("status") == 200:
-                # Trích xuất link video không watermark
-                video_url = data["video"]["noWatermark"]
-                return RedirectResponse(url=video_url)
-        except Exception:
-            pass
-    return {"error": "Không lấy được link, thử link khác đi b!"}
+                # Lấy link video không watermark và redirect
+                return RedirectResponse(url=data["video"]["noWatermark"])
+        except Exception as e:
+            return {"error": "Lỗi server: " + str(e)}
+    return {"error": "Không tìm thấy video"}
     
