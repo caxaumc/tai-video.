@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Tải Video Miễn Phí</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; max-width: 400px; width: 100%; box-sizing: border-box; }
+        h2 { color: #333; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #007fff; border-radius: 8px; font-size: 14px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background-color: #007fff; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background-color: #0056b3; }
+        #result { margin-top: 20px; display: none; padding: 15px; border-radius: 8px; background-color: #e9f7ef; }
+        #downloadLink { display: inline-block; padding: 10px 20px; background-color: #28a745; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Tải Video TikTok / YouTube</h2>
+    <input type="text" id="videoUrl" placeholder="Dán link video vào đây...">
+    <button onclick="downloadVideo()" id="btnDownload">Bắt đầu tải Video</button>
+
+    <div id="result">
+        <p id="videoTitle" style="font-weight: bold; color: #2c3e50;"></p>
+        <a id="downloadLink" href="#" target="_blank">Bấm vào đây để tải về</a>
+    </div>
+</div>
+
+<script>
+async function downloadVideo() {
+    const urlInput = document.getElementById('videoUrl').value;
+    const btn = document.getElementById('btnDownload');
+    const resultDiv = document.getElementById('result');
+    const videoTitle = document.getElementById('videoTitle');
+    const downloadLink = document.getElementById('downloadLink');
+
+    if (!urlInput) {
+        alert('Vui lòng dán link video vào đã nhé!');
+        return;
+    }
+
+    btn.innerText = 'Đang xử lý...';
+    btn.disabled = true;
+    resultDiv.style.display = 'none';
+
+    try {
+        const response = await fetch('https://Caxaumc.pythonanywhere.com/get-video', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: urlInput })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            videoTitle.innerText = data.title;
+            downloadLink.href = data.download_url;
+            resultDiv.style.display = 'block';
+        } else {
+            alert('Lỗi: ' + (data.detail || 'Không lấy được link.'));
+        }
+    } catch (error) {
+        alert('Lỗi kết nối server: ' + error.message);
+    } finally {
+        btn.innerText = 'Bắt đầu tải Video';
+        btn.disabled = false;
+    }
+}
+</script>
+
+</body>
+</html>
