@@ -1,4 +1,4 @@
-<input type="text" id="videoUrl" placeholder="Dán link TikTok vào đây">
+<input type="text" id="videoUrl" placeholder="Dán link TikTok/Douyin vào đây">
 <button onclick="downloadVideo()">Tải video</button>
 
 <script>
@@ -6,8 +6,8 @@
         const urlInput = document.getElementById('videoUrl').value.trim();
         if (!urlInput) return alert('Dán link vào đi b!');
         
-        // Cách này không dùng fetch, nên sẽ không bị lỗi CORS chặn
-        const downloadUrl = 'https://snaptik.app/en?url=' + encodeURIComponent(urlInput);
+        // Gọi thẳng vào server riêng của b trên Render
+        const downloadUrl = 'https://tai-video-pjtg.onrender.com/api?url=' + encodeURIComponent(urlInput);
         window.open(downloadUrl, '_blank');
     }
 </script>
