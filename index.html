@@ -1,6 +1,6 @@
-async function downloadVideo() {
-    const urlInput = document.getElementById('videoUrl').value.trim();
-    if (!urlInput) return alert('Dán link vào đi b!');
+// Sửa dòng const apiUrl thành thế này:
+const apiUrl = 'https://api.tiklydown.eu.org/api/download?url=' + encodeURIComponent(urlInput);
+
 
     // Thay vì fetch('https://caxaumc.pythonanywhere.com/get-video'), 
     // b hãy dùng API này (nó không bị chặn mạng):
