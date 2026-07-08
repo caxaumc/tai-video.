@@ -1,72 +1,22 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang Tải Video Miễn Phí</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #121212; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: #fff; }
-        .container { background: #1e1e1e; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); text-align: center; max-width: 400px; width: 100%; box-sizing: border-box; border: 1px solid #333; }
-        h2 { color: #fff; margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; margin-bottom: 15px; border: 2px solid #007fff; border-radius: 8px; font-size: 14px; box-sizing: border-box; background: #2a2a2a; color: #fff; }
-        button { width: 100%; padding: 12px; background-color: #007fff; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background-color: #0056b3; }
-        #result { margin-top: 20px; display: none; padding: 15px; border-radius: 8px; background-color: #2e7d32; border: 1px solid #4caf50; }
-        #downloadLink { display: inline-block; padding: 10px 20px; background-color: #ffffff; color: #1b5e20; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 10px; }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h2>Tải Video TikTok Không Logo</h2>
-    <input type="text" id="videoUrl" placeholder="Dán link video TikTok vào đây...">
-    <button onclick="downloadVideo()" id="btnDownload">Bắt đầu tải Video</button>
-
-    <div id="result">
-        <p id="videoTitle" style="font-weight: bold; color: #ffffff; margin: 0;">Đã bóc tách thành công!</p>
-        <a id="downloadLink" href="#" target="_blank">Bấm vào đây để tải về</a>
-    </div>
-</div>
-
-<script>
 async function downloadVideo() {
     const urlInput = document.getElementById('videoUrl').value.trim();
-    const btn = document.getElementById('btnDownload');
-    const resultDiv = document.getElementById('result');
-    const downloadLink = document.getElementById('downloadLink');
+    if (!urlInput) return alert('Dán link vào đi b!');
 
-    if (!urlInput) {
-        alert('Vui lòng dán link video vào đã nhé!');
-        return;
-    }
-
-    btn.innerText = 'Đang xử lý...';
-    btn.disabled = true;
-    resultDiv.style.display = 'none';
+    // Thay vì fetch('https://caxaumc.pythonanywhere.com/get-video'), 
+    // b hãy dùng API này (nó không bị chặn mạng):
+    const apiUrl = `https://api.tiklydown.eu.org/api/download?url=${encodeURIComponent(urlInput)}`;
 
     try {
-        // Dùng API mở miễn phí chuyên dụng cho TikTok, không cần qua server PythonAnywhere nữa
-        const response = await fetch(`https://api.tiklydown.eu.org/api/download?url=${encodeURIComponent(urlInput)}`);
-        
-        if (!response.ok) throw new Error('API công cộng đang bận, thử lại sau b nhé.');
-
+        const response = await fetch(apiUrl);
         const data = await response.json();
 
-        // Kiểm tra nếu có link tải video không logo
-        if (data && data.video && data.video.noWatermark) {
-            downloadLink.href = data.video.noWatermark;
-            resultDiv.style.display = 'block';
+        if (data.status === 200 && data.video.noWatermark) {
+            window.location.href = data.video.noWatermark; // Tải trực tiếp
         } else {
-            alert('Không tìm thấy link video sạch. Thử link khác xem sao b!');
+            alert('Lỗi rồi, để tui xem lại...');
         }
-    } catch (error) {
-        alert('Lỗi: ' + error.message);
-    } finally {
-        btn.innerText = 'Bắt đầu tải Video';
-        btn.disabled = false;
+    } catch (e) {
+        alert('Lỗi kết nối: ' + e.message);
     }
 }
-</script>
 
-</body>
-</html>
