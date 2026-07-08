@@ -4,15 +4,19 @@ import httpx
 
 app = FastAPI()
 
-# API này nhận link từ web của b, sau đó tự điều hướng đến link tải trực tiếp
 @app.get("/api")
 async def handle_download(url: str):
-    # Sử dụng API trung gian ổn định để lấy link no-watermark
+    # API trung gian lấy link không watermark
     api_endpoint = f"https://api.tiklydown.eu.org/api/download?url={url}"
     async with httpx.AsyncClient() as client:
-        response = await client.get(api_endpoint)
-        data = response.json()
-        if data.get("status") == 200:
-            return RedirectResponse(url=data["video"]["noWatermark"])
-    return {"error": "Không lấy được link"}
+        try:
+            response = await client.get(api_endpoint)
+            data = response.json()
+            if data.get("status") == 200:
+                # Trích xuất link video không watermark
+                video_url = data["video"]["noWatermark"]
+                return RedirectResponse(url=video_url)
+        except Exception:
+            pass
+    return {"error": "Không lấy được link, thử link khác đi b!"}
     
