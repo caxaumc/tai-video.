@@ -18,12 +18,12 @@
 <body>
 
 <div class="container">
-    <h2>Tải Video TikTok / YouTube</h2>
-    <input type="text" id="videoUrl" placeholder="Dán link video vào đây...">
+    <h2>Tải Video TikTok Không Logo</h2>
+    <input type="text" id="videoUrl" placeholder="Dán link video TikTok vào đây...">
     <button onclick="downloadVideo()" id="btnDownload">Bắt đầu tải Video</button>
 
     <div id="result">
-        <p id="videoTitle" style="font-weight: bold; color: #ffffff; margin: 0;"></p>
+        <p id="videoTitle" style="font-weight: bold; color: #ffffff; margin: 0;">Đã bóc tách thành công!</p>
         <a id="downloadLink" href="#" target="_blank">Bấm vào đây để tải về</a>
     </div>
 </div>
@@ -33,7 +33,6 @@ async function downloadVideo() {
     const urlInput = document.getElementById('videoUrl').value.trim();
     const btn = document.getElementById('btnDownload');
     const resultDiv = document.getElementById('result');
-    const videoTitle = document.getElementById('videoTitle');
     const downloadLink = document.getElementById('downloadLink');
 
     if (!urlInput) {
@@ -46,29 +45,22 @@ async function downloadVideo() {
     resultDiv.style.display = 'none';
 
     try {
-        // Đã sửa chính xác sang Caxaumc viết hoa chữ C
-        const response = await fetch('https://caxaumc.pythonanywhere.com/get-video', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url: urlInput })
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.detail || 'Server trả về lỗi.');
-        }
+        // Dùng API mở miễn phí chuyên dụng cho TikTok, không cần qua server PythonAnywhere nữa
+        const response = await fetch(`https://api.tiklydown.eu.org/api/download?url=${encodeURIComponent(urlInput)}`);
+        
+        if (!response.ok) throw new Error('API công cộng đang bận, thử lại sau b nhé.');
 
         const data = await response.json();
 
-        if (data.success) {
-            videoTitle.innerText = data.title;
-            downloadLink.href = data.download_url;
+        // Kiểm tra nếu có link tải video không logo
+        if (data && data.video && data.video.noWatermark) {
+            downloadLink.href = data.video.noWatermark;
             resultDiv.style.display = 'block';
         } else {
-            alert('Lỗi: Không lấy được link video.');
+            alert('Không tìm thấy link video sạch. Thử link khác xem sao b!');
         }
     } catch (error) {
-        alert('Lỗi kết nối server: ' + error.message);
+        alert('Lỗi: ' + error.message);
     } finally {
         btn.innerText = 'Bắt đầu tải Video';
         btn.disabled = false;
@@ -78,4 +70,3 @@ async function downloadVideo() {
 
 </body>
 </html>
-
