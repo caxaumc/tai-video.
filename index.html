@@ -47,7 +47,7 @@ async function downloadVideo() {
 
     try {
         // Đã sửa chính xác sang Caxaumc viết hoa chữ C
-        const response = await fetch('https://Caxaumc.pythonanywhere.com/get-video', {
+        const response = await fetch('https://caxaumc.pythonanywhere.com/get-video', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ url: urlInput })
